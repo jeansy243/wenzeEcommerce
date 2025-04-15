@@ -132,10 +132,18 @@ const Basket = {
     }
   }
 };
+const Account = {
+  login:(values:any) =>requests.post('auth/login', values).then((response) => {
+    console.log("Login response:", response); // Log de la réponse du serveur pour vérifier le contenu
+    return response; // Si la réponse contient un utilisateur, il sera renvoyé
+  }),
+  current: () => requests.get('auth/currentUser') 
+}
 
 const agent = {
   Store,
   Basket,
+  Account
 };
 
 export default agent;

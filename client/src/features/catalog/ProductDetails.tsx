@@ -12,22 +12,22 @@ export default function ProductDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Corrected formatPrice function
+    // Format the price correctly
     const formatPrice = (price: number): string => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('fr-FR', {
             style: 'currency',
-            currency: 'EUR', // You can adjust currency to 'USD' if needed
+            currency: 'EUR',
             minimumFractionDigits: 2,
         }).format(price);
     };
 
-    // Improved extractImageName function with better error handling
+    // Extract the image name or return a default image name
     const extractImageName = (item: Product): string => {
         if (item?.pictureUrl) {
             const parts = item.pictureUrl.split('/');
-            return parts[parts.length - 1];  // Returns the image file name
+            return parts[parts.length - 1];
         }
-        return 'default-image.jpg'; // Default image in case pictureUrl is not found
+        return 'default-image.jpg'; // Default image if no pictureUrl is provided
     };
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export default function ProductDetails() {
             agent.Store.details(parseInt(id))
                 .then(response => {
                     setProduct(response);
-                    setError(null); // Reset error in case of success
+                    setError(null); // Clear error message on success
                 })
                 .catch(error => {
                     console.error(error);
@@ -45,19 +45,23 @@ export default function ProductDetails() {
         }
     }, [id]);
 
-     if (loading) return <Spinner message ='Loading Products...'/>
-    if (!product) return <NotFound/>
+    // Loading state
+    if (loading) return <Spinner message="Loading Products..." />;
+    
+    // No product found
+    if (!product) return <NotFound />;
 
     return (
         <Grid2 container spacing={6}>
-            <Grid2 >
-                <img 
-                    src={`/images/products/${extractImageName(product)}`} 
-                    alt={product.name} 
-                    style={{ width: '100%' }} 
+            <Grid2 item xs={12} md={6}>
+                <img
+                    src={`/images/products/${extractImageName(product)}`}
+                    alt={product.name}
+                    style={{ width: '50%', objectFit: 'cover', height: 'auto' }}
+                    onError={(e) => (e.currentTarget.src = './images/products/default-image.jpg')} // Fallback on error
                 />
             </Grid2>
-            <Grid2 >
+            <Grid2 item xs={12} md={6}>
                 <Typography variant="h3">{product.name}</Typography>
                 <Divider sx={{ mb: 2 }} />
                 <Typography gutterBottom color="secondary" variant="h4">{formatPrice(product.price)}</Typography>
@@ -68,20 +72,17 @@ export default function ProductDetails() {
                                 <TableCell>Name</TableCell>
                                 <TableCell>{product.name}</TableCell>
                             </TableRow>
-
                             <TableRow>
                                 <TableCell>Description</TableCell>
                                 <TableCell>{product.description}</TableCell>
                             </TableRow>
-
                             <TableRow>
                                 <TableCell>Type</TableCell>
-                                <TableCell>{product.type}</TableCell>
+                                <TableCell>{product.type ? product.type : 'N/A'}</TableCell> {/* Assuming 'type' is an object */}
                             </TableRow>
-
                             <TableRow>
                                 <TableCell>Brand</TableCell>
-                                <TableCell>{product.brand}</TableCell>
+                                <TableCell>{product.brand ? product.brand: 'N/A'}</TableCell> {/* Assuming 'brand' is an object */}
                             </TableRow>
                         </TableBody>
                     </Table>

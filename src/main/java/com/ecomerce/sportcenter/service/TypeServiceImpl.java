@@ -19,6 +19,10 @@ public class TypeServiceImpl implements TypeService {
         this.typeRepository = typeRepository;
     }
 
+    public Type createType(Type type) {
+        return typeRepository.save(type);
+    }
+
     @Override
     public List<TypeResponse> getAllTypes() {
         List<Type> typeList = typeRepository.findAll(); // Récupération de tous les types depuis la base de données

@@ -1,9 +1,11 @@
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from "@mui/material";
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button, Box } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import agent from "../../app/api/agent";
 import { Product } from "../../app/models/product";
 import { Add, Remove } from "@mui/icons-material";
+import BasketSummary from "./BasketSummary";
+import { Link } from "react-router-dom";
 
 
 export default function BasketPage() {
@@ -46,6 +48,7 @@ export default function BasketPage() {
   if (!basket || basket.items.length === 0) return <Typography variant="h3">Your basket is empty. Please add a few items!</Typography>;
 
   return (
+    <>
     <TableContainer component={Paper}>
       <Typography variant="h5" gutterBottom>
         Your Shopping Cart
@@ -95,5 +98,20 @@ export default function BasketPage() {
         </TableBody>
       </Table>
     </TableContainer>
+
+    <Box mt={2} p={2} bgcolor="background.paper" borderRadius={4}>
+      <BasketSummary/>
+      <Button
+      component={Link}
+      to='/checkout'
+      variant='contained'
+      size ='large'
+      fullWidth
+      >
+        
+        Checkout
+          </Button>
+    </Box>
+    </>
   );
 }

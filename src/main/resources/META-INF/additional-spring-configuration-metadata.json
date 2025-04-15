@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "jpa.hibernate.ddl-auto",
-  "type": "java.lang.String",
-  "description": "A description for 'jpa.hibernate.ddl-auto'"
-}]}
+{"properties": [
+  {
+    "name": "jpa.hibernate.ddl-auto",
+    "type": "java.lang.String",
+    "description": "A description for 'jpa.hibernate.ddl-auto'"
+  },
+  {
+    "name": "upload.dir",
+    "type": "java.lang.String",
+    "description": "A description for 'upload.dir'"
+  }
+]}

@@ -1,20 +1,24 @@
 package com.ecomerce.sportcenter.model;
 
+import java.util.Set;
+
 public class JwtRequest {
     private String username;
     private String password;
+    private Set<String> role; // Ajout du champ role
 
-    // Constructor with parameters
-    public JwtRequest(String username, String password) {
+    // Constructeur avec paramètres
+    public JwtRequest(String username, String password, Set<String> role) {
         this.username = username;
         this.password = password;
+        this.role = role; // Initialisation du champ role
     }
 
-    // Default constructor (optional)
+    // Constructeur par défaut (optionnel)
     public JwtRequest() {
     }
 
-    // Getter and setter for username
+    // Getter et setter pour username
     public String getUsername() {
         return username;
     }
@@ -23,7 +27,7 @@ public class JwtRequest {
         this.username = username;
     }
 
-    // Getter and setter for password
+    // Getter et setter pour password
     public String getPassword() {
         return password;
     }
@@ -32,10 +36,20 @@ public class JwtRequest {
         this.password = password;
     }
 
+    // Getter et setter pour role
+    public Set<String> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<String> role) {
+        this.role = role;
+    }
+
     // Builder pattern
     public static class Builder {
         private String username;
         private String password;
+        private Set<String> role; // Ajout du champ role dans le Builder
 
         public Builder setUsername(String username) {
             this.username = username;
@@ -47,8 +61,31 @@ public class JwtRequest {
             return this;
         }
 
-        public JwtRequest build() {
-            return new JwtRequest(username, password);
+        public Builder setRole(Set<String> role) {
+            this.role = role; // Ajout de la méthode setRole
+            return this;
         }
+
+        public JwtRequest build() {
+            return new JwtRequest(username, password, role); // Construction avec le rôle
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "JwtRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +  // Affichage du rôle
+                '}';
+    }
+
+    // Méthode utilitaire pour créer un JwtRequest via Builder
+    public static JwtRequest createRequest(String username, String password, Set<String> role) {
+        return new Builder()
+                .setUsername(username)
+                .setPassword(password)
+                .setRole(role) // Ajout du rôle dans la création
+                .build();
     }
 }

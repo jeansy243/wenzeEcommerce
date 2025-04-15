@@ -16,6 +16,10 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     private BrandRepository brandRepository;
 
+    public Brand createBrand(Brand brand) {
+        return brandRepository.save(brand);
+    }
+
     // Retrieve all brands
     @Override
     public List<BrandResponse> getAllBrands() {

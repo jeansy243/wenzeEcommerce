@@ -1,17 +1,16 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, Typography, Badge } from "@mui/material";
 import { Product } from "../../app/models/product";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useAppDispatch } from "../../app/store/configureStore";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import agent from "../../app/api/agent";
 import { setBasket } from "../basket/BasketSlice";
-
 
 // Corrected formatPrice function
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('en-FR', {
-    style: 'currency',  // Fixed typo: 'curency' -> 'currency'
-    currency: 'EUR',    // Changed to 'EUR' for consistency
+    style: 'currency',  
+    currency: 'EUR',    
     minimumFractionDigits: 2,
   }).format(price);
 };
@@ -34,6 +33,7 @@ interface Props {
 export default function ProductCard({ product }: Props) {
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const basket = useAppSelector(state => state.basket); // Get basket state from store
 
   // Define the addItem function inside the component to access state and dispatch
   function addItem() {
@@ -43,9 +43,15 @@ export default function ProductCard({ product }: Props) {
         console.log('New Basket:', response.basket);
         dispatch(setBasket(response.basket));
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        console.error(error);
+        alert("Failed to add item to basket. Please try again.");
+      })
       .finally(() => setLoading(false));
   }
+
+  // Calculate the total number of items in the basket (this is a simple implementation)
+  const itemCount = basket?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   return (
     <Card>
@@ -60,7 +66,7 @@ export default function ProductCard({ product }: Props) {
       />
       <CardMedia
         sx={{ height: 120, backgroundSize: 'contain' }}
-        image={"/images/products/" + extractImageName(product)}
+        image={"./images/products/" + extractImageName(product)}
         title={product.name}
       />
       <CardContent>
@@ -69,15 +75,20 @@ export default function ProductCard({ product }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button
-          loading={loading}
-          onClick={addItem}
-          size="small"
-          startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
-        >
-          Add to Cart
+        <Badge badgeContent={itemCount} color="secondary">
+          <Button
+            loading={loading} // Disable the button while loading
+            onClick={addItem}
+            size="small"
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
+            aria-label="Add to Cart" // Accessibility
+          >
+            Add to Cart
+          </Button>
+        </Badge>
+        <Button component={Link} to={`/store/${product.id}`} size="small" aria-label="View Product">
+          View
         </Button>
-        <Button component={Link} to={`/store/${product.id}`} size="small">View</Button>
       </CardActions>
     </Card>
   );
